@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1CC41C35-545B-4366-A4CD-7DE383ABEF64}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		Directory.Build.props = Directory.Build.props
+		Directory.Packages.props = Directory.Packages.props
+		global.json = global.json
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleTestcontainers.MsSql", "src\SimpleTestcontainers.MsSql\SimpleTestcontainers.MsSql.csproj", "{CE8073C2-C3E5-4F27-89EE-EBF0F425FC1A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleTestcontainers.MsSql.Tests", "src\SimpleTestcontainers.MsSql.Tests\SimpleTestcontainers.MsSql.Tests.csproj", "{84705023-D9BB-4720-8BF5-C9F966E2099C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CE8073C2-C3E5-4F27-89EE-EBF0F425FC1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE8073C2-C3E5-4F27-89EE-EBF0F425FC1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE8073C2-C3E5-4F27-89EE-EBF0F425FC1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE8073C2-C3E5-4F27-89EE-EBF0F425FC1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84705023-D9BB-4720-8BF5-C9F966E2099C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84705023-D9BB-4720-8BF5-C9F966E2099C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84705023-D9BB-4720-8BF5-C9F966E2099C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84705023-D9BB-4720-8BF5-C9F966E2099C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
