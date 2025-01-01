@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <IsPackable>true</IsPackable>
+        <!-- xUnit is preventing this from being packed into a nuget. So we force this to be packable. -->
+        <AssemblyName>WorldDomination.$(MSBuildProjectName)</AssemblyName>
+        <RootNamespace>WorldDomination.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+        <Title>Simple: xUnit v3 Database Testcontainer Helpers</Title>
+        <Company>World Domination Technolgoies Pty. Ltd.</Company>
+        <Authors>Justin Adler</Authors>
+        <Description>
+            A simplified way to create a Microsoft SqlServer Testcontainer with each test having it's own unique database in the same docker image instance. This means each test is having is running in true data isolation. It also means you can parallelize your tests easier, instead of having all the tests run in a (common) single collection/sequential run.
+        </Description>
+        <Product>Simple Microsoft SqlServer Testcontainers</Product>
+        <Copyright>2025</Copyright>
+        <PackageIcon>icon.jpg</PackageIcon>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <RepositoryUrl>https://github.com/PureKrome/SimpleTestcontainers.MsSql</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>testcontainers;mssql;sqlserver;worlddomination;worldomination;unicorn;magicalunicorn;magical-unicorn</PackageTags>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Testcontainers" />
+        <PackageReference Include="xunit.v3" />
+    </ItemGroup>
+
+
+    <ItemGroup>
+        <None Include="..\..\icon.jpg">
+            <Pack>True</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
+        <None Include="..\..\README.md">
+            <Pack>True</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
+    </ItemGroup>
+
+</Project>
