@@ -1,4 +1,4 @@
-<h1 align="center">Simple: Microsoft SqlServer Testcontainer Helpers for xUnit v3</h1>
+<h1 align="center">Simple: Database Testcontainer Helpers for xUnit v3</h1>
 
 <div align="center">
   ⚡ Making it simple to run your database tests in true database-isolation, quickly! ⚡
@@ -27,12 +27,12 @@ Testing code that depends on a database can be slow and brittle.
 
 [Testcontainers](https://dotnet.testcontainers.org/) are a great way to test your code that depends on a database.
 It can also be slow with the common xUnit pattern of using a "Test Collection" which means each test in that 'collection' is sequential.
-It's also annoying to creating lots of xUnit ceremony to make multiple collections.
-Finally, it's frustrating that multiple tests hitting the same Database can cause the tests to be brittle.
+It's also annoying when creating lots of xUnit ceremony when making multiple collections.
+Finally, it's frustrating that multiple tests hitting the **same Database** can cause the tests to be brittle.
 
 **This library aims to make it simple to test your code that depends on a database:**
 
-- ✅ A single database per test class.
+- ✅ A single database per (xUnit) test class.
 - ✅ Tests are now isolated from each other.
 - ⚡ The entire test run can be faster because they now run in parallel (based off xUnit's [Test Collections concept](https://xunit.net/docs/running-tests-in-parallel#parallelism-in-test-frameworks))
 
