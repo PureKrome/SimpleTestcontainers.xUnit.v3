@@ -22,9 +22,9 @@ jobs:
 
       - run: dotnet build --configuration Debug --no-restore /p:ContinuousIntegrationBuild=true
 
-      - run: dotnet run --project src/SimpleTestcontainers.xUnit.v3.MsSql.Tests/SimpleTestcontainers.xUnit.v3.MsSql.Tests.csproj --configuration Release --verbosity minimal --no-build
+      - run: dotnet run --project src/SimpleTestcontainers.xUnit.v3.MsSql.Tests/SimpleTestcontainers.xUnit.v3.MsSql.Tests.csproj --configuration Debug --verbosity minimal --no-build
 
-      - run: dotnet run --project src/SimpleTestcontainers.xUnit.v3.PostgreSQL.Tests/SimpleTestcontainers.xUnit.v3.PostgreSQL.Tests.csproj --configuration Release --verbosity minimal --no-build
+      - run: dotnet run --project src/SimpleTestcontainers.xUnit.v3.PostgreSQL.Tests/SimpleTestcontainers.xUnit.v3.PostgreSQL.Tests.csproj --configuration Debug --verbosity minimal --no-build
 
       # - name: Code coverage
       #   uses: codecov/codecov-action@v5
@@ -36,12 +36,6 @@ jobs:
   build_and_test_release:
     name: 🏗️ Build (RELEASE)
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        test_projects:
-          - src/SimpleTestcontainers.xUnit.v3.MsSql.Tests/SimpleTestcontainers.xUnit.v3.MsSql.Tests.csproj
-          - src/SimpleTestcontainers.xUnit.v3.PostgreSQL.Tests/SimpleTestcontainers.xUnit.v3.PostgreSQL.Tests.csproj
 
     steps:
       - name: Checkout repository
