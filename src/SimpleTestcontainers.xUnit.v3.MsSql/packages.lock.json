@@ -20,11 +20,11 @@
       },
       "Testcontainers.MsSql": {
         "type": "Direct",
-        "requested": "[4.1.0, )",
-        "resolved": "4.1.0",
-        "contentHash": "DjNSX/5lOSEpkQvvZ5btBKs+iPshbWSjpKdcvS6yCSgYrykhSneRC+23Tl/2O4U6FGM13Dxp2C/VEtBePR84uw==",
+        "requested": "[4.2.0, )",
+        "resolved": "4.2.0",
+        "contentHash": "degFDO7d2OOFG++c/jw6CzdmP2W9FprriT7LwLIk5JfVf4w9NmrFqW4FWDq8LUjqBS2OOzpuJWh0zDBWtE1y/Q==",
         "dependencies": {
-          "Testcontainers": "4.1.0"
+          "Testcontainers": "4.2.0"
         }
       },
       "Azure.Core": {
