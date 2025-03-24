@@ -63,7 +63,7 @@ jobs:
         uses: actions/setup-dotnet@v4
 
       - name: Run tests
-        run: dotnet test ${{ matrix.project }} --configuration Debug --framework ${{ matrix.framework }} --no-build --verbosity minimal
+        run: dotnet run --project ${{ matrix.project }} --configuration Debug --framework ${{ matrix.framework }} --no-build --verbosity minimal
 
       # - name: Code coverage
       #   uses: codecov/codecov-action@v5
