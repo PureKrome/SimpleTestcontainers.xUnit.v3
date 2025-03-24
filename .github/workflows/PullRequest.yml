@@ -22,9 +22,13 @@ jobs:
 
       - run: dotnet build --configuration Debug --no-restore /p:ContinuousIntegrationBuild=true
 
-      - run: dotnet run --project src/SimpleTestcontainers.xUnit.v3.MsSql.Tests/SimpleTestcontainers.xUnit.v3.MsSql.Tests.csproj --configuration Debug --verbosity minimal --no-build
+      - run: dotnet run --project src/SimpleTestcontainers.xUnit.v3.MsSql.Tests/SimpleTestcontainers.xUnit.v3.MsSql.Tests.csproj --configuration Debug --verbosity minimal --no-build --framework net8.0
 
-      - run: dotnet run --project src/SimpleTestcontainers.xUnit.v3.PostgreSQL.Tests/SimpleTestcontainers.xUnit.v3.PostgreSQL.Tests.csproj --configuration Debug --verbosity minimal --no-build
+      - run: dotnet run --project src/SimpleTestcontainers.xUnit.v3.MsSql.Tests/SimpleTestcontainers.xUnit.v3.MsSql.Tests.csproj --configuration Debug --verbosity minimal --no-build --framework net9.0
+
+      - run: dotnet run --project src/SimpleTestcontainers.xUnit.v3.PostgreSQL.Tests/SimpleTestcontainers.xUnit.v3.PostgreSQL.Tests.csproj --configuration Debug --verbosity minimal --no-build --framework net8.0
+
+      - run: dotnet run --project src/SimpleTestcontainers.xUnit.v3.PostgreSQL.Tests/SimpleTestcontainers.xUnit.v3.PostgreSQL.Tests.csproj --configuration Debug --verbosity minimal --no-build --framework net9.0
 
       # - name: Code coverage
       #   uses: codecov/codecov-action@v5

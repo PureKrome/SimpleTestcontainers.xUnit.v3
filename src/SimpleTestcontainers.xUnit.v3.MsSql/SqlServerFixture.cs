@@ -1,4 +1,3 @@
-using DotNet.Testcontainers.Configurations;
 using Testcontainers.MsSql;
 using WorldDomination.SimpleTestcontainers.xUnit.v3.Databases;
 using Xunit;
@@ -8,7 +7,7 @@ namespace WorldDomination.SimpleTestcontainers.xUnit.v3.MsSql;
 /// <summary>
 /// Initializes a new instance of the <see cref="SqlServerFixture"/> class with some default settings.
 ///   - Container Name: SqlServer-Tests
-///   - Image: mcr.microsoft.com/mssql/server:2022-latest
+///   - Image: mcr.microsoft.com/mssql/server:2022 (Refer to TestContainers for the specific version)
 /// </summary>
 public sealed class SqlServerFixture : IDatabaseFixture, IAsyncLifetime
 {
