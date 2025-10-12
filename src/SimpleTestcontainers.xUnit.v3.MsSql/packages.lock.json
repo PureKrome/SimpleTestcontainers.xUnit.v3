@@ -4,9 +4,9 @@
     "net8.0": {
       "Microsoft.Data.SqlClient": {
         "type": "Direct",
-        "requested": "[6.1.1, )",
-        "resolved": "6.1.1",
-        "contentHash": "syGQmIUPAYYHAHyTD8FCkTNThpQWvoA7crnIQRMfp8dyB5A2cWU3fQexlRTFkVmV7S0TjVmthi0LJEFVjHo8AQ==",
+        "requested": "[6.1.2, )",
+        "resolved": "6.1.2",
+        "contentHash": "q0GxRC0fgwfZgU14pU34ro0MW7Gs8S6NDmKCcEqymvZljT8UQa633BbEmk/Rb5upNF9NHZ3/jVm7zLiWbM8uTA==",
         "dependencies": {
           "Azure.Core": "1.47.1",
           "Azure.Identity": "1.14.2",
@@ -371,13 +371,13 @@
       "WorldDomination.SimpleTestcontainers.xUnit.v3.Databases": {
         "type": "Project",
         "dependencies": {
-          "Testcontainers": "[4.6.0, )",
+          "Testcontainers": "[4.7.0, )",
           "xunit.v3": "[2.0.3, )"
         }
       },
       "Testcontainers": {
         "type": "CentralTransitive",
-        "requested": "[4.6.0, )",
+        "requested": "[4.7.0, )",
         "resolved": "4.7.0",
         "contentHash": "Nx4HR4e7XcKV5BVIqYdCpF8PAYFpukZ8QpoBe+sY9FL5q0RDtsy81MElVXIJVO4Wg3Q6j2f39QaF7i+2jf6YjA==",
         "dependencies": {
@@ -403,9 +403,9 @@
     "net9.0": {
       "Microsoft.Data.SqlClient": {
         "type": "Direct",
-        "requested": "[6.1.1, )",
-        "resolved": "6.1.1",
-        "contentHash": "syGQmIUPAYYHAHyTD8FCkTNThpQWvoA7crnIQRMfp8dyB5A2cWU3fQexlRTFkVmV7S0TjVmthi0LJEFVjHo8AQ==",
+        "requested": "[6.1.2, )",
+        "resolved": "6.1.2",
+        "contentHash": "q0GxRC0fgwfZgU14pU34ro0MW7Gs8S6NDmKCcEqymvZljT8UQa633BbEmk/Rb5upNF9NHZ3/jVm7zLiWbM8uTA==",
         "dependencies": {
           "Azure.Core": "1.47.1",
           "Azure.Identity": "1.14.2",
@@ -764,13 +764,13 @@
       "WorldDomination.SimpleTestcontainers.xUnit.v3.Databases": {
         "type": "Project",
         "dependencies": {
-          "Testcontainers": "[4.6.0, )",
+          "Testcontainers": "[4.7.0, )",
           "xunit.v3": "[2.0.3, )"
         }
       },
       "Testcontainers": {
         "type": "CentralTransitive",
-        "requested": "[4.6.0, )",
+        "requested": "[4.7.0, )",
         "resolved": "4.7.0",
         "contentHash": "Nx4HR4e7XcKV5BVIqYdCpF8PAYFpukZ8QpoBe+sY9FL5q0RDtsy81MElVXIJVO4Wg3Q6j2f39QaF7i+2jf6YjA==",
         "dependencies": {
