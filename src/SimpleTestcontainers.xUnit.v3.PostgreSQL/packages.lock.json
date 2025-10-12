@@ -4,9 +4,9 @@
     "net8.0": {
       "Npgsql": {
         "type": "Direct",
-        "requested": "[9.0.3, )",
-        "resolved": "9.0.3",
-        "contentHash": "tPvY61CxOAWxNsKLEBg+oR646X4Bc8UmyQ/tJszL/7mEmIXQnnBhVJZrZEEUv0Bstu0mEsHZD5At3EO8zQRAYw==",
+        "requested": "[9.0.4, )",
+        "resolved": "9.0.4",
+        "contentHash": "68BASXH0FAEuL/J4J0eRfYC8/3vzqQTmoW8zDzNf0JgaVxc7LZeEkS6jaG0ib3voFLxY5ZiCwJG+uQM+mzuu0Q==",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "8.0.2"
         }
@@ -157,13 +157,13 @@
       "WorldDomination.SimpleTestcontainers.xUnit.v3.Databases": {
         "type": "Project",
         "dependencies": {
-          "Testcontainers": "[4.6.0, )",
+          "Testcontainers": "[4.7.0, )",
           "xunit.v3": "[2.0.3, )"
         }
       },
       "Testcontainers": {
         "type": "CentralTransitive",
-        "requested": "[4.6.0, )",
+        "requested": "[4.7.0, )",
         "resolved": "4.7.0",
         "contentHash": "Nx4HR4e7XcKV5BVIqYdCpF8PAYFpukZ8QpoBe+sY9FL5q0RDtsy81MElVXIJVO4Wg3Q6j2f39QaF7i+2jf6YjA==",
         "dependencies": {
@@ -189,9 +189,9 @@
     "net9.0": {
       "Npgsql": {
         "type": "Direct",
-        "requested": "[9.0.3, )",
-        "resolved": "9.0.3",
-        "contentHash": "tPvY61CxOAWxNsKLEBg+oR646X4Bc8UmyQ/tJszL/7mEmIXQnnBhVJZrZEEUv0Bstu0mEsHZD5At3EO8zQRAYw==",
+        "requested": "[9.0.4, )",
+        "resolved": "9.0.4",
+        "contentHash": "68BASXH0FAEuL/J4J0eRfYC8/3vzqQTmoW8zDzNf0JgaVxc7LZeEkS6jaG0ib3voFLxY5ZiCwJG+uQM+mzuu0Q==",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "8.0.2"
         }
@@ -336,13 +336,13 @@
       "WorldDomination.SimpleTestcontainers.xUnit.v3.Databases": {
         "type": "Project",
         "dependencies": {
-          "Testcontainers": "[4.6.0, )",
+          "Testcontainers": "[4.7.0, )",
           "xunit.v3": "[2.0.3, )"
         }
       },
       "Testcontainers": {
         "type": "CentralTransitive",
-        "requested": "[4.6.0, )",
+        "requested": "[4.7.0, )",
         "resolved": "4.7.0",
         "contentHash": "Nx4HR4e7XcKV5BVIqYdCpF8PAYFpukZ8QpoBe+sY9FL5q0RDtsy81MElVXIJVO4Wg3Q6j2f39QaF7i+2jf6YjA==",
         "dependencies": {
