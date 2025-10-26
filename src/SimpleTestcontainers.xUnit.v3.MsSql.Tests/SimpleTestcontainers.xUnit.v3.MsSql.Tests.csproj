@@ -12,6 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Testcontainers.MsSql" VersionOverride="4.8.1" />
       <ProjectReference Include="..\SimpleTestcontainers.xUnit.v3.MsSql\SimpleTestcontainers.xUnit.v3.MsSql.csproj" />
     </ItemGroup>
 
