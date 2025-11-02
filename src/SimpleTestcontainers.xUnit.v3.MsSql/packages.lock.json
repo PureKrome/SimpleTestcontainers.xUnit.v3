@@ -23,11 +23,11 @@
       },
       "Testcontainers.MsSql": {
         "type": "Direct",
-        "requested": "[4.8.0, )",
-        "resolved": "4.8.0",
-        "contentHash": "NOPbOViWvaEXiuh+fg9KoPUYsxt3hOAra1volUPSeWlLFCuS+3HLavaYaocybNOVBtNr0IeTIcQk96OqcMfAwQ==",
+        "requested": "[4.8.1, )",
+        "resolved": "4.8.1",
+        "contentHash": "6uJdmEHc5fyd+RMSDQ2SrHt9eXfCjHtaqI5Nx/Wp+aRSb1ahCDB3N2n0d4Sjqo/tL7e2W7Ifh4X6IVFGHSF7hw==",
         "dependencies": {
-          "Testcontainers": "4.8.0"
+          "Testcontainers": "4.8.1"
         }
       },
       "Azure.Core": {
@@ -407,8 +407,8 @@
       "Testcontainers": {
         "type": "CentralTransitive",
         "requested": "[4.8.0, )",
-        "resolved": "4.8.0",
-        "contentHash": "P84aPfFCIxyc+yxwj8J1AjDyv+tnhDYosD3kouXdgxHTV2UPeRvck09l1WLqeVa170wyp6t319x9shzAx5wwvQ==",
+        "resolved": "4.8.1",
+        "contentHash": "6KB430LIVqn2H25idznjqWFu8I9ltQua8FFCoyB8AywUAqEjbkGVm1SfJ8wfXprV7tZlgSxrcWFgilZbA1RDYA==",
         "dependencies": {
           "Docker.DotNet.Enhanced": "3.129.0",
           "Docker.DotNet.Enhanced.X509": "3.129.0",
@@ -451,11 +451,11 @@
       },
       "Testcontainers.MsSql": {
         "type": "Direct",
-        "requested": "[4.8.0, )",
-        "resolved": "4.8.0",
-        "contentHash": "NOPbOViWvaEXiuh+fg9KoPUYsxt3hOAra1volUPSeWlLFCuS+3HLavaYaocybNOVBtNr0IeTIcQk96OqcMfAwQ==",
+        "requested": "[4.8.1, )",
+        "resolved": "4.8.1",
+        "contentHash": "6uJdmEHc5fyd+RMSDQ2SrHt9eXfCjHtaqI5Nx/Wp+aRSb1ahCDB3N2n0d4Sjqo/tL7e2W7Ifh4X6IVFGHSF7hw==",
         "dependencies": {
-          "Testcontainers": "4.8.0"
+          "Testcontainers": "4.8.1"
         }
       },
       "Azure.Core": {
@@ -829,8 +829,8 @@
       "Testcontainers": {
         "type": "CentralTransitive",
         "requested": "[4.8.0, )",
-        "resolved": "4.8.0",
-        "contentHash": "P84aPfFCIxyc+yxwj8J1AjDyv+tnhDYosD3kouXdgxHTV2UPeRvck09l1WLqeVa170wyp6t319x9shzAx5wwvQ==",
+        "resolved": "4.8.1",
+        "contentHash": "6KB430LIVqn2H25idznjqWFu8I9ltQua8FFCoyB8AywUAqEjbkGVm1SfJ8wfXprV7tZlgSxrcWFgilZbA1RDYA==",
         "dependencies": {
           "Docker.DotNet.Enhanced": "3.129.0",
           "Docker.DotNet.Enhanced.X509": "3.129.0",
