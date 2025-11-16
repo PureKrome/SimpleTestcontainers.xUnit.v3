@@ -56,8 +56,16 @@ jobs:
             --source https://nuget.pkg.github.com/${{ github.repository_owner }}
             
   test:
-    name: 🏗️ Build and Test with CodeCov (DEBUG)
+    name: 🏗️ Build and Test ${{ matrix.target.name }} (DEBUG)
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - name: MsSql
+            project: src/SimpleTestcontainers.xUnit.v3.MsSql.Tests/SimpleTestcontainers.xUnit.v3.MsSql.Tests.csproj
+          - name: PostgreSQL
+            project: src/SimpleTestcontainers.xUnit.v3.PostgreSQL.Tests/SimpleTestcontainers.xUnit.v3.PostgreSQL.Tests.csproj
 
     steps:
       - name: Checkout repo
@@ -66,17 +74,14 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v5
 
-      - run: dotnet restore --verbosity minimal
+      - name: Restore NuGet packages
+        run: dotnet restore --verbosity minimal
 
-      - run: dotnet build --configuration Debug --no-restore
+      - name: Build solution
+        run: dotnet build --configuration Debug --no-restore
 
-      - run: dotnet run --project src/SimpleTestcontainers.xUnit.v3.MsSql.Tests/SimpleTestcontainers.xUnit.v3.MsSql.Tests.csproj --configuration Debug --verbosity minimal --no-build --framework net8.0
-
-      - run: dotnet run --project src/SimpleTestcontainers.xUnit.v3.MsSql.Tests/SimpleTestcontainers.xUnit.v3.MsSql.Tests.csproj --configuration Debug --verbosity minimal --no-build --framework net9.0
-
-      - run: dotnet run --project src/SimpleTestcontainers.xUnit.v3.PostgreSQL.Tests/SimpleTestcontainers.xUnit.v3.PostgreSQL.Tests.csproj --configuration Debug --verbosity minimal --no-build --framework net8.0
-
-      - run: dotnet run --project src/SimpleTestcontainers.xUnit.v3.PostgreSQL.Tests/SimpleTestcontainers.xUnit.v3.PostgreSQL.Tests.csproj --configuration Debug --verbosity minimal --no-build --framework net9.0
+      - name: Test - ${{ matrix.target.name }}
+        run: dotnet run --project ${{ matrix.target.project }} --configuration Debug --verbosity minimal --no-build
 
       # - name: Code coverage
       #   uses: codecov/codecov-action@v5
