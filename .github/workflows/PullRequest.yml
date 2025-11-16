@@ -8,8 +8,16 @@ env:
 jobs:
 
   build_and_test_debug:
-    name: 🔬 Build and test with CodeCov (DEBUG)
+    name: 🔬 Build and test ${{ matrix.target.name }} (DEBUG)
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - name: MsSql
+            project: src/SimpleTestcontainers.xUnit.v3.MsSql.Tests/SimpleTestcontainers.xUnit.v3.MsSql.Tests.csproj
+          - name: PostgreSQL
+            project: src/SimpleTestcontainers.xUnit.v3.PostgreSQL.Tests/SimpleTestcontainers.xUnit.v3.PostgreSQL.Tests.csproj
 
     steps:
       - name: Checkout repository
@@ -22,13 +30,8 @@ jobs:
 
       - run: dotnet build --configuration Debug --no-restore /p:ContinuousIntegrationBuild=true
 
-      - run: dotnet run --project src/SimpleTestcontainers.xUnit.v3.MsSql.Tests/SimpleTestcontainers.xUnit.v3.MsSql.Tests.csproj --configuration Debug --verbosity minimal --no-build --framework net8.0
-
-      - run: dotnet run --project src/SimpleTestcontainers.xUnit.v3.MsSql.Tests/SimpleTestcontainers.xUnit.v3.MsSql.Tests.csproj --configuration Debug --verbosity minimal --no-build --framework net9.0
-
-      - run: dotnet run --project src/SimpleTestcontainers.xUnit.v3.PostgreSQL.Tests/SimpleTestcontainers.xUnit.v3.PostgreSQL.Tests.csproj --configuration Debug --verbosity minimal --no-build --framework net8.0
-
-      - run: dotnet run --project src/SimpleTestcontainers.xUnit.v3.PostgreSQL.Tests/SimpleTestcontainers.xUnit.v3.PostgreSQL.Tests.csproj --configuration Debug --verbosity minimal --no-build --framework net9.0
+      - name: Test - ${{ matrix.target.name }}
+        run: dotnet run --project ${{ matrix.target.project }} --configuration Debug --verbosity minimal --no-build
 
       # - name: Code coverage
       #   uses: codecov/codecov-action@v5
@@ -37,7 +40,7 @@ jobs:
       #     directory: "./.codecoverage"
       #     fail_ci_if_error: true
 
-  build_and_test_release:
+  build_release:
     name: 🏗️ Build (RELEASE)
     runs-on: ubuntu-latest
 
