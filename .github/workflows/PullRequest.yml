@@ -10,6 +10,8 @@ jobs:
   build_and_test_debug:
     name: 🔬 Build and test ${{ matrix.target.name }} (DEBUG)
     runs-on: ubuntu-latest
+    env:
+      CODECOVERAGE_DIR: ./.codecoverage
     strategy:
       fail-fast: false
       matrix:
@@ -31,14 +33,14 @@ jobs:
       - run: dotnet build --configuration Debug --no-restore /p:ContinuousIntegrationBuild=true
 
       - name: Test - ${{ matrix.target.name }}
-        run: dotnet run --project ${{ matrix.target.project }} --configuration Debug --verbosity minimal --no-build
+        run: dotnet run --project ${{ matrix.target.project }} --configuration Debug --verbosity minimal --no-build -- --coverage --coverage-output-format cobertura --coverage-output ${{ env.CODECOVERAGE_DIR }}/coverage.cobertura-${{ matrix.target.project }}.xml
 
-      # - name: Code coverage
-      #   uses: codecov/codecov-action@v5
-      #   with:
-      #     token: ${{ secrets.CODECOV_TOKEN }}
-      #     directory: "./.codecoverage"
-      #     fail_ci_if_error: true
+      - name: Code coverage
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ${{ env.CODECOVERAGE_DIR }}
+          fail_ci_if_error: true
 
   build_release:
     name: 🏗️ Build (RELEASE)

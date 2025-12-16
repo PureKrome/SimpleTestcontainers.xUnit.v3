@@ -58,6 +58,8 @@ jobs:
   test:
     name: 🏗️ Build and Test ${{ matrix.target.name }} (DEBUG)
     runs-on: ubuntu-latest
+    env:
+      CODECOVERAGE_DIR: ./.codecoverage
     strategy:
       fail-fast: false
       matrix:
@@ -81,11 +83,11 @@ jobs:
         run: dotnet build --configuration Debug --no-restore
 
       - name: Test - ${{ matrix.target.name }}
-        run: dotnet run --project ${{ matrix.target.project }} --configuration Debug --verbosity minimal --no-build
+        run: dotnet run --project ${{ matrix.target.project }} --configuration Debug --verbosity minimal --no-build -- --coverage --coverage-output-format cobertura --coverage-output ${{ env.CODECOVERAGE_DIR }}/coverage.cobertura-${{ matrix.target.project }}.xml
 
-      # - name: Code coverage
-      #   uses: codecov/codecov-action@v5
-      #   with:
-      #     token: ${{ secrets.CODECOV_TOKEN }}
-      #     directory: "./.codecoverage"
-      #     fail_ci_if_error: true
+      - name: Code coverage
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ${{ env.CODECOVERAGE_DIR }}
+          fail_ci_if_error: true
