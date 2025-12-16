@@ -22,6 +22,10 @@ jobs:
             project: src/SimpleTestcontainers.xUnit.v3.PostgreSQL.Tests/SimpleTestcontainers.xUnit.v3.PostgreSQL.Tests.csproj
 
     steps:
+      - run: |
+          echo ${{ github.workspace }}
+          echo $CODECOVERAGE_DIR
+      
       - name: Checkout repository
         uses: actions/checkout@v6
 
