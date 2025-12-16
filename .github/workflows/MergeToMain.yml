@@ -59,7 +59,7 @@ jobs:
     name: 🏗️ Build and Test ${{ matrix.target.name }} (DEBUG)
     runs-on: ubuntu-latest
     env:
-      CODECOVERAGE_DIR: ./.codecoverage
+      CODECOVERAGE_DIR: ${{ github.workspace }}/.codecoverage
     strategy:
       fail-fast: false
       matrix:
