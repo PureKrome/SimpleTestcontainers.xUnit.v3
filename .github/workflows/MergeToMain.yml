@@ -26,6 +26,7 @@ jobs:
     outputs:
       mssql-image: ${{ steps.pull-images.outputs.mssql-image }}
       postgres-image: ${{ steps.pull-images.outputs.postgres-image }}
+      ryuk-image: ${{ steps.pull-images.outputs.ryuk-image }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -131,6 +132,7 @@ jobs:
           cache-file: ${{ matrix.target.cache-file }}
           mssql-image: ${{ needs.pull_docker_images.outputs.mssql-image }}
           postgres-image: ${{ needs.pull_docker_images.outputs.postgres-image }}
+          ryuk-image: ${{ needs.pull_docker_images.outputs.ryuk-image }}
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v5
