@@ -41,24 +41,32 @@ runs:
         restore-keys: |
           docker-images-${{ runner.os }}-
 
-    - name: Load cached Docker images
+    - name: Load cached Docker images in parallel
       if: steps.cache-docker.outputs.cache-hit == 'true'
       shell: bash
       run: |
-        echo "✅ Cache hit! Loading images from cache..."
+        echo "✅ Cache hit! Loading images from cache in parallel..."
         
+        # Load SQL Server image in background
         if [ -f /tmp/.docker-cache/mssql.tar ]; then
-          echo "📦 Loading SQL Server image from cache..."
-          docker load -i /tmp/.docker-cache/mssql.tar
-          echo "✅ SQL Server image loaded"
+          (
+            echo "📦 Loading SQL Server image from cache..."
+            docker load -i /tmp/.docker-cache/mssql.tar
+            echo "✅ SQL Server image loaded"
+          ) &
         fi
         
+        # Load PostgreSQL image in background
         if [ -f /tmp/.docker-cache/postgres.tar ]; then
-          echo "📦 Loading PostgreSQL image from cache..."
-          docker load -i /tmp/.docker-cache/postgres.tar
-          echo "✅ PostgreSQL image loaded"
+          (
+            echo "📦 Loading PostgreSQL image from cache..."
+            docker load -i /tmp/.docker-cache/postgres.tar
+            echo "✅ PostgreSQL image loaded"
+          ) &
         fi
         
+        # Wait for both loads to complete
+        wait
         echo "🎉 All cached images loaded successfully"
 
     - name: Pull and cache Docker images in parallel
