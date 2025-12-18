@@ -122,6 +122,9 @@ jobs:
         with:
           name: build-debug
 
+      - name: Restore executable permissions
+        run: chmod +x **/bin/Debug/**/*
+
       - name: Load cached Docker image
         uses: ./.github/actions/load-cached-docker-image
         with:
