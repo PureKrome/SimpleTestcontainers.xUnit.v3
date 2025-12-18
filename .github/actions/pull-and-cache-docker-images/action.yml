@@ -1,0 +1,67 @@
+name: 'Pull and Cache Docker Images'
+description: 'Pulls Docker images required by Testcontainers and caches them for faster test execution'
+outputs:
+  mssql-image:
+    description: 'The SQL Server Docker image tag'
+    value: ${{ steps.get-images.outputs.MSSQL_IMAGE }}
+  postgres-image:
+    description: 'The PostgreSQL Docker image tag'
+    value: ${{ steps.get-images.outputs.POSTGRES_IMAGE }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Get Docker image versions from Testcontainers
+      id: get-images
+      shell: bash
+      run: |
+        output=$(dotnet run .github/scripts/GetTestContainerDockerImageTags.cs)
+        echo "$output"
+        
+        # Parse output and set outputs
+        mssql_image=$(echo "$output" | grep "MSSQL_IMAGE=" | cut -d'=' -f2)
+        postgres_image=$(echo "$output" | grep "POSTGRES_IMAGE=" | cut -d'=' -f2)
+        
+        echo "MSSQL_IMAGE=$mssql_image" >> $GITHUB_OUTPUT
+        echo "POSTGRES_IMAGE=$postgres_image" >> $GITHUB_OUTPUT
+        
+        echo "Detected images:"
+        echo "  SQL Server: $mssql_image"
+        echo "  PostgreSQL: $postgres_image"
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Cache Docker images
+      uses: actions/cache@v4
+      with:
+        path: /tmp/.docker-cache
+        key: docker-images-${{ runner.os }}-${{ steps.get-images.outputs.MSSQL_IMAGE }}-${{ steps.get-images.outputs.POSTGRES_IMAGE }}
+        restore-keys: |
+          docker-images-${{ runner.os }}-
+
+    - name: Pull and cache Docker images in parallel
+      shell: bash
+      run: |
+        mkdir -p /tmp/.docker-cache
+        
+        # Pull and save SQL Server image in background
+        (
+          echo "🔄 Pulling SQL Server image: ${{ steps.get-images.outputs.MSSQL_IMAGE }}"
+          docker pull ${{ steps.get-images.outputs.MSSQL_IMAGE }} && \
+          docker save ${{ steps.get-images.outputs.MSSQL_IMAGE }} -o /tmp/.docker-cache/mssql.tar && \
+          echo "✅ SQL Server image cached"
+        ) &
+        
+        # Pull and save PostgreSQL image in background
+        (
+          echo "🔄 Pulling PostgreSQL image: ${{ steps.get-images.outputs.POSTGRES_IMAGE }}"
+          docker pull ${{ steps.get-images.outputs.POSTGRES_IMAGE }} && \
+          docker save ${{ steps.get-images.outputs.POSTGRES_IMAGE }} -o /tmp/.docker-cache/postgres.tar && \
+          echo "✅ PostgreSQL image cached"
+        ) &
+        
+        # Wait for both background jobs to complete
+        wait
+        echo "🎉 All images pulled and cached successfully"
+      continue-on-error: true

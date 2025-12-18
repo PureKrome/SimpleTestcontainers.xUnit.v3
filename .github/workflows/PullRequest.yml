@@ -11,8 +11,8 @@ jobs:
     name: 🐳 Pull Docker images
     runs-on: ubuntu-latest
     outputs:
-      mssql-image: ${{ steps.get-images.outputs.MSSQL_IMAGE }}
-      postgres-image: ${{ steps.get-images.outputs.POSTGRES_IMAGE }}
+      mssql-image: ${{ steps.pull-images.outputs.mssql-image }}
+      postgres-image: ${{ steps.pull-images.outputs.postgres-image }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -20,58 +20,9 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v5
 
-      - name: Get Docker image versions from Testcontainers
-        id: get-images
-        run: |
-          output=$(dotnet run .github/scripts/GetTestContainerDockerImageTags.cs)
-          echo "$output"
-          
-          # Parse output and set GitHub Actions outputs
-          mssql_image=$(echo "$output" | grep "MSSQL_IMAGE=" | cut -d'=' -f2)
-          postgres_image=$(echo "$output" | grep "POSTGRES_IMAGE=" | cut -d'=' -f2)
-          
-          echo "MSSQL_IMAGE=$mssql_image" >> $GITHUB_OUTPUT
-          echo "POSTGRES_IMAGE=$postgres_image" >> $GITHUB_OUTPUT
-          
-          echo "Detected images:"
-          echo "  SQL Server: $mssql_image"
-          echo "  PostgreSQL: $postgres_image"
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Cache Docker images
-        uses: actions/cache@v4
-        with:
-          path: /tmp/.docker-cache
-          key: docker-images-${{ runner.os }}-${{ steps.get-images.outputs.MSSQL_IMAGE }}-${{ steps.get-images.outputs.POSTGRES_IMAGE }}
-          restore-keys: |
-            docker-images-${{ runner.os }}-
-
-      - name: Pull and cache Docker images in parallel
-        run: |
-          mkdir -p /tmp/.docker-cache
-          
-          # Pull and save SQL Server image in background
-          (
-            echo "🔄 Pulling SQL Server image: ${{ steps.get-images.outputs.MSSQL_IMAGE }}"
-            docker pull ${{ steps.get-images.outputs.MSSQL_IMAGE }} && \
-            docker save ${{ steps.get-images.outputs.MSSQL_IMAGE }} -o /tmp/.docker-cache/mssql.tar && \
-            echo "✅ SQL Server image cached"
-          ) &
-          
-          # Pull and save PostgreSQL image in background
-          (
-            echo "🔄 Pulling PostgreSQL image: ${{ steps.get-images.outputs.POSTGRES_IMAGE }}"
-            docker pull ${{ steps.get-images.outputs.POSTGRES_IMAGE }} && \
-            docker save ${{ steps.get-images.outputs.POSTGRES_IMAGE }} -o /tmp/.docker-cache/postgres.tar && \
-            echo "✅ PostgreSQL image cached"
-          ) &
-          
-          # Wait for both background jobs to complete
-          wait
-          echo "🎉 All images pulled and cached successfully"
-        continue-on-error: true
+      - name: Pull and cache Docker images
+        id: pull-images
+        uses: ./.github/actions/pull-and-cache-docker-images
 
   build_and_test_debug:
     name: 🔬 Build and test ${{ matrix.target.name }} (DEBUG)
@@ -91,30 +42,15 @@ jobs:
             cache-file: postgres.tar
 
     steps:
-      - run: |
-          echo ${{ github.workspace }}
-          echo $CODECOVERAGE_DIR
-      
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Restore Docker image cache
-        uses: actions/cache@v4
-        with:
-          path: /tmp/.docker-cache
-          key: docker-images-${{ runner.os }}-${{ needs.pull_docker_images.outputs.mssql-image }}-${{ needs.pull_docker_images.outputs.postgres-image }}
-          restore-keys: |
-            docker-images-${{ runner.os }}-
-
       - name: Load cached Docker image
-        run: |
-          if [ -f /tmp/.docker-cache/${{ matrix.target.cache-file }} ]; then
-            echo "✅ Loading cached Docker image from /tmp/.docker-cache/${{ matrix.target.cache-file }}"
-            docker load -i /tmp/.docker-cache/${{ matrix.target.cache-file }}
-            echo "✅ Image loaded successfully"
-          else
-            echo "⚠️  Cache not found, image will be pulled by Testcontainers"
-          fi
+        uses: ./.github/actions/load-cached-docker-image
+        with:
+          cache-file: ${{ matrix.target.cache-file }}
+          mssql-image: ${{ needs.pull_docker_images.outputs.mssql-image }}
+          postgres-image: ${{ needs.pull_docker_images.outputs.postgres-image }}
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v5

@@ -1,0 +1,34 @@
+name: 'Load Cached Docker Image'
+description: 'Loads a cached Docker image for Testcontainers tests'
+inputs:
+  cache-file:
+    description: 'The tar file name in the cache (e.g., mssql.tar, postgres.tar)'
+    required: true
+  mssql-image:
+    description: 'The SQL Server Docker image tag'
+    required: true
+  postgres-image:
+    description: 'The PostgreSQL Docker image tag'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Restore Docker image cache
+      uses: actions/cache@v4
+      with:
+        path: /tmp/.docker-cache
+        key: docker-images-${{ runner.os }}-${{ inputs.mssql-image }}-${{ inputs.postgres-image }}
+        restore-keys: |
+          docker-images-${{ runner.os }}-
+
+    - name: Load cached Docker image
+      shell: bash
+      run: |
+        if [ -f /tmp/.docker-cache/${{ inputs.cache-file }} ]; then
+          echo "✅ Loading cached Docker image from /tmp/.docker-cache/${{ inputs.cache-file }}"
+          docker load -i /tmp/.docker-cache/${{ inputs.cache-file }}
+          echo "✅ Image loaded successfully"
+        else
+          echo "⚠️  Cache not found, image will be pulled by Testcontainers"
+        fi

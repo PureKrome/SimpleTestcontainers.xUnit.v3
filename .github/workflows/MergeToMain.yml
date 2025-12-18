@@ -20,6 +20,23 @@ env:
   DOTNET_NOLOGO: true
 
 jobs:
+  pull_docker_images:
+    name: 🐳 Pull Docker images
+    runs-on: ubuntu-latest
+    outputs:
+      mssql-image: ${{ steps.pull-images.outputs.mssql-image }}
+      postgres-image: ${{ steps.pull-images.outputs.postgres-image }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+
+      - name: Pull and cache Docker images
+        id: pull-images
+        uses: ./.github/actions/pull-and-cache-docker-images
+
   build_and_create_a_nuget:
     name: 📦 Build and publish a NuGet (to GPR only) (RELEASE)
     runs-on: ubuntu-latest
@@ -56,8 +73,9 @@ jobs:
             --source https://nuget.pkg.github.com/${{ github.repository_owner }}
             
   test:
-    name: 🏗️ Build and Test ${{ matrix.target.name }} (DEBUG)
+    name: 🧪 Build and Test ${{ matrix.target.name }} (DEBUG)
     runs-on: ubuntu-latest
+    needs: pull_docker_images
     env:
       CODECOVERAGE_DIR: ${{ github.workspace }}/.codecoverage
     strategy:
@@ -66,12 +84,21 @@ jobs:
         target:
           - name: MsSql
             project: src/SimpleTestcontainers.xUnit.v3.MsSql.Tests/SimpleTestcontainers.xUnit.v3.MsSql.Tests.csproj
+            cache-file: mssql.tar
           - name: PostgreSQL
             project: src/SimpleTestcontainers.xUnit.v3.PostgreSQL.Tests/SimpleTestcontainers.xUnit.v3.PostgreSQL.Tests.csproj
+            cache-file: postgres.tar
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v6
+
+      - name: Load cached Docker image
+        uses: ./.github/actions/load-cached-docker-image
+        with:
+          cache-file: ${{ matrix.target.cache-file }}
+          mssql-image: ${{ needs.pull_docker_images.outputs.mssql-image }}
+          postgres-image: ${{ needs.pull_docker_images.outputs.postgres-image }}
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v5
