@@ -33,6 +33,7 @@ runs:
       uses: docker/setup-buildx-action@v3
 
     - name: Cache Docker images
+      id: cache-docker
       uses: actions/cache@v4
       with:
         path: /tmp/.docker-cache
@@ -40,9 +41,31 @@ runs:
         restore-keys: |
           docker-images-${{ runner.os }}-
 
-    - name: Pull and cache Docker images in parallel
+    - name: Load cached Docker images
+      if: steps.cache-docker.outputs.cache-hit == 'true'
       shell: bash
       run: |
+        echo "✅ Cache hit! Loading images from cache..."
+        
+        if [ -f /tmp/.docker-cache/mssql.tar ]; then
+          echo "📦 Loading SQL Server image from cache..."
+          docker load -i /tmp/.docker-cache/mssql.tar
+          echo "✅ SQL Server image loaded"
+        fi
+        
+        if [ -f /tmp/.docker-cache/postgres.tar ]; then
+          echo "📦 Loading PostgreSQL image from cache..."
+          docker load -i /tmp/.docker-cache/postgres.tar
+          echo "✅ PostgreSQL image loaded"
+        fi
+        
+        echo "🎉 All cached images loaded successfully"
+
+    - name: Pull and cache Docker images in parallel
+      if: steps.cache-docker.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        echo "❌ Cache miss! Pulling images from Docker Hub..."
         mkdir -p /tmp/.docker-cache
         
         # Pull and save SQL Server image in background
