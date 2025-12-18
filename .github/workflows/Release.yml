@@ -45,7 +45,7 @@ jobs:
       - run: dotnet pack --configuration Release --no-build --output ./artifacts -p:DebugType=Embedded -p:version=${{ env.RELEASE_VERSION }}
 
       - name: Publish artifacts
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: NuGetPackage.${{ env.RELEASE_VERSION }}
           path: ./artifacts/
