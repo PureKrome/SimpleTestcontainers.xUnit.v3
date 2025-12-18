@@ -123,7 +123,7 @@ jobs:
           name: build-debug
 
       - name: Restore executable permissions
-        run: chmod +x **/bin/Debug/**/*
+        run: find . -type f -path '*/bin/Debug/*' -exec chmod +x {} \;
 
       - name: Load cached Docker image
         uses: ./.github/actions/load-cached-docker-image
