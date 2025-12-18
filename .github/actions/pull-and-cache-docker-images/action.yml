@@ -41,33 +41,25 @@ runs:
         restore-keys: |
           docker-images-${{ runner.os }}-
 
-    - name: Load cached Docker images in parallel
+    - name: Verify cached images exist
       if: steps.cache-docker.outputs.cache-hit == 'true'
       shell: bash
       run: |
-        echo "✅ Cache hit! Loading images from cache in parallel..."
+        echo "✅ Cache hit! Verifying cached image files..."
         
-        # Load SQL Server image in background
         if [ -f /tmp/.docker-cache/mssql.tar ]; then
-          (
-            echo "📦 Loading SQL Server image from cache..."
-            docker load -i /tmp/.docker-cache/mssql.tar
-            echo "✅ SQL Server image loaded"
-          ) &
+          echo "✅ SQL Server image cached ($(du -h /tmp/.docker-cache/mssql.tar | cut -f1))"
+        else
+          echo "⚠️  SQL Server cache file missing"
         fi
         
-        # Load PostgreSQL image in background
         if [ -f /tmp/.docker-cache/postgres.tar ]; then
-          (
-            echo "📦 Loading PostgreSQL image from cache..."
-            docker load -i /tmp/.docker-cache/postgres.tar
-            echo "✅ PostgreSQL image loaded"
-          ) &
+          echo "✅ PostgreSQL image cached ($(du -h /tmp/.docker-cache/postgres.tar | cut -f1))"
+        else
+          echo "⚠️  PostgreSQL cache file missing"
         fi
         
-        # Wait for both loads to complete
-        wait
-        echo "🎉 All cached images loaded successfully"
+        echo "🎉 Cache verification complete - images will be loaded in test jobs"
 
     - name: Pull and cache Docker images in parallel
       if: steps.cache-docker.outputs.cache-hit != 'true'
@@ -81,7 +73,7 @@ runs:
           echo "🔄 Pulling SQL Server image: ${{ steps.get-images.outputs.MSSQL_IMAGE }}"
           docker pull ${{ steps.get-images.outputs.MSSQL_IMAGE }} && \
           docker save ${{ steps.get-images.outputs.MSSQL_IMAGE }} -o /tmp/.docker-cache/mssql.tar && \
-          echo "✅ SQL Server image cached"
+          echo "✅ SQL Server image cached ($(du -h /tmp/.docker-cache/mssql.tar | cut -f1))"
         ) &
         
         # Pull and save PostgreSQL image in background
@@ -89,7 +81,7 @@ runs:
           echo "🔄 Pulling PostgreSQL image: ${{ steps.get-images.outputs.POSTGRES_IMAGE }}"
           docker pull ${{ steps.get-images.outputs.POSTGRES_IMAGE }} && \
           docker save ${{ steps.get-images.outputs.POSTGRES_IMAGE }} -o /tmp/.docker-cache/postgres.tar && \
-          echo "✅ PostgreSQL image cached"
+          echo "✅ PostgreSQL image cached ($(du -h /tmp/.docker-cache/postgres.tar | cut -f1))"
         ) &
         
         # Wait for both background jobs to complete
