@@ -48,17 +48,29 @@ jobs:
           restore-keys: |
             docker-images-${{ runner.os }}-
 
-      - name: Pull and cache SQL Server image
+      - name: Pull and cache Docker images in parallel
         run: |
-          docker pull ${{ steps.get-images.outputs.MSSQL_IMAGE }} || true
           mkdir -p /tmp/.docker-cache
-          docker save ${{ steps.get-images.outputs.MSSQL_IMAGE }} -o /tmp/.docker-cache/mssql.tar || true
-        continue-on-error: true
-
-      - name: Pull and cache PostgreSQL image
-        run: |
-          docker pull ${{ steps.get-images.outputs.POSTGRES_IMAGE }} || true
-          docker save ${{ steps.get-images.outputs.POSTGRES_IMAGE }} -o /tmp/.docker-cache/postgres.tar || true
+          
+          # Pull and save SQL Server image in background
+          (
+            echo "🔄 Pulling SQL Server image: ${{ steps.get-images.outputs.MSSQL_IMAGE }}"
+            docker pull ${{ steps.get-images.outputs.MSSQL_IMAGE }} && \
+            docker save ${{ steps.get-images.outputs.MSSQL_IMAGE }} -o /tmp/.docker-cache/mssql.tar && \
+            echo "✅ SQL Server image cached"
+          ) &
+          
+          # Pull and save PostgreSQL image in background
+          (
+            echo "🔄 Pulling PostgreSQL image: ${{ steps.get-images.outputs.POSTGRES_IMAGE }}"
+            docker pull ${{ steps.get-images.outputs.POSTGRES_IMAGE }} && \
+            docker save ${{ steps.get-images.outputs.POSTGRES_IMAGE }} -o /tmp/.docker-cache/postgres.tar && \
+            echo "✅ PostgreSQL image cached"
+          ) &
+          
+          # Wait for both background jobs to complete
+          wait
+          echo "🎉 All images pulled and cached successfully"
         continue-on-error: true
 
   build_and_test_debug:
