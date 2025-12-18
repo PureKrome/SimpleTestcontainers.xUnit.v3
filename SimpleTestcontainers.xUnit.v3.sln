@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.12.35527.113
+# Visual Studio Version 18
+VisualStudioVersion = 18.1.11312.151 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0. Solution Items", "0. Solution Items", "{1CC41C35-545B-4366-A4CD-7DE383ABEF64}"
 	ProjectSection(SolutionItems) = preProject
@@ -21,6 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{320D
 		.github\CONTRIBUTING.md = .github\CONTRIBUTING.md
 		.github\dependabot.yml = .github\dependabot.yml
 		.github\FUNDING.yml = .github\FUNDING.yml
+		.github\actions\README.md = .github\actions\README.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{59A38EAD-8E2D-41F8-9E65-C73C6A16F2AB}"
@@ -47,6 +48,26 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleTestcontainers.xUnit.v3.PostgreSQL.Tests", "src\SimpleTestcontainers.xUnit.v3.PostgreSQL.Tests\SimpleTestcontainers.xUnit.v3.PostgreSQL.Tests.csproj", "{CD5A3D5B-FBDE-46F3-9D3C-E0B0923AD238}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4. AzureStorage", "4. AzureStorage", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "actions", "actions", "{CD74457E-0028-40D8-88AB-A5220D3C835C}"
+	ProjectSection(SolutionItems) = preProject
+		.github\actions\README.md = .github\actions\README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "pull-and-cache-docker-images", "pull-and-cache-docker-images", "{ED8FC62E-94F4-48AD-8F22-0980B68DCB38}"
+	ProjectSection(SolutionItems) = preProject
+		.github\actions\pull-and-cache-docker-images\action.yml = .github\actions\pull-and-cache-docker-images\action.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "load-cached-docker-image", "load-cached-docker-image", "{5DBD55BD-E7F8-4F1B-AA33-5BC5FABB962B}"
+	ProjectSection(SolutionItems) = preProject
+		.github\actions\load-cached-docker-image\action.yml = .github\actions\load-cached-docker-image\action.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{068E32B2-1BF0-4C03-9C3F-A856AE3A8722}"
+	ProjectSection(SolutionItems) = preProject
+		.github\scripts\GetTestContainerDockerImageTags.cs = .github\scripts\GetTestContainerDockerImageTags.cs
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -86,6 +107,10 @@ Global
 		{224D7141-F6D8-4344-9D27-414D19FD6751} = {4F7395C0-5F7A-4661-B689-62D3DCC9D8E8}
 		{8C94620A-4B91-479F-84CA-64B881DC5848} = {23250790-EC97-4053-B0E7-785B943F4F0B}
 		{CD5A3D5B-FBDE-46F3-9D3C-E0B0923AD238} = {23250790-EC97-4053-B0E7-785B943F4F0B}
+		{CD74457E-0028-40D8-88AB-A5220D3C835C} = {320D889E-E58C-4255-9B5B-9BA444D20757}
+		{ED8FC62E-94F4-48AD-8F22-0980B68DCB38} = {CD74457E-0028-40D8-88AB-A5220D3C835C}
+		{5DBD55BD-E7F8-4F1B-AA33-5BC5FABB962B} = {CD74457E-0028-40D8-88AB-A5220D3C835C}
+		{068E32B2-1BF0-4C03-9C3F-A856AE3A8722} = {320D889E-E58C-4255-9B5B-9BA444D20757}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D9314E8A-BF0A-49C2-90BE-50ED4A58F9B9}

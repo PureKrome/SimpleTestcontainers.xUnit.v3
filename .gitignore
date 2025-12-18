@@ -39,3 +39,5 @@ App_Data/
 *.nupkg
 .vs
 *.orig
+# Ignore package lock files generated in scripts
+/.github/scripts/packages.lock.json

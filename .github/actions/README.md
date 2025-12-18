@@ -1,0 +1,235 @@
+# Reusable GitHub Actions
+
+This directory contains composite actions that can be reused across multiple workflows.
+
+## Available Actions
+
+### 1. pull-and-cache-docker-images
+
+**Purpose:** Extracts Docker image versions from Testcontainers packages, pulls them, and caches them for faster subsequent runs.
+
+**Usage:**
+```yaml
+- name: Pull and cache Docker images
+  id: pull-images
+  uses: ./.github/actions/pull-and-cache-docker-images
+```
+
+**Outputs:**
+- `mssql-image`: The SQL Server Docker image tag (e.g., `mcr.microsoft.com/mssql/server:2022-CU14-ubuntu-22.04`)
+- `postgres-image`: The PostgreSQL Docker image tag (e.g., `postgres:15.1`)
+
+**What it does:**
+1. Runs the `.NET 10 file-based app` to extract actual image versions
+2. Sets up Docker Buildx
+3. **Checks cache for existing images**
+4. **If cache hit:** Loads images from cache (fast! ~10-20 seconds)
+5. **If cache miss:** Pulls both Docker images in parallel and saves to cache (~2-3 minutes)
+6. Outputs the image tags for downstream jobs
+
+**Cache Behavior:**
+- **Cache Hit:** Images loaded from tar files, no Docker Hub downloads
+- **Cache Miss:** Images pulled from Docker Hub and saved for next time
+
+**Cache key format:**
+```
+docker-images-{OS}-{MSSQL_IMAGE}-{POSTGRES_IMAGE}
+```
+
+**Example log output (Cache Hit):**
+```
+✅ Cache hit! Loading images from cache...
+📦 Loading SQL Server image from cache...
+✅ SQL Server image loaded
+📦 Loading PostgreSQL image from cache...
+✅ PostgreSQL image loaded
+🎉 All cached images loaded successfully
+```
+
+**Example log output (Cache Miss):**
+```
+❌ Cache miss! Pulling images from Docker Hub...
+🔄 Pulling SQL Server image: mcr.microsoft.com/mssql/server:2022-CU14-ubuntu-22.04
+🔄 Pulling PostgreSQL image: postgres:15.1
+✅ SQL Server image cached
+✅ PostgreSQL image cached
+🎉 All images pulled and cached successfully
+```
+
+---
+
+### 2. load-cached-docker-image
+
+**Purpose:** Loads a previously cached Docker image for use in tests.
+
+**Usage:**
+```yaml
+- name: Load cached Docker image
+  uses: ./.github/actions/load-cached-docker-image
+  with:
+    cache-file: mssql.tar  # or postgres.tar
+    mssql-image: ${{ needs.pull_docker_images.outputs.mssql-image }}
+    postgres-image: ${{ needs.pull_docker_images.outputs.postgres-image }}
+```
+
+**Inputs:**
+- `cache-file` (required): The tar file name in the cache (e.g., `mssql.tar`, `postgres.tar`)
+- `mssql-image` (required): The SQL Server Docker image tag from the pull job
+- `postgres-image` (required): The PostgreSQL Docker image tag from the pull job
+
+**What it does:**
+1. Restores the Docker image cache using the same key as the pull job
+2. Loads the specified tar file into Docker
+3. Falls back gracefully if cache is missing (Testcontainers will pull)
+
+---
+
+## Workflow Integration
+
+### Example: Pull Request Workflow
+
+```yaml
+jobs:
+  pull_docker_images:
+    name: 🐳 Pull Docker images
+    runs-on: ubuntu-latest
+    outputs:
+      mssql-image: ${{ steps.pull-images.outputs.mssql-image }}
+      postgres-image: ${{ steps.pull-images.outputs.postgres-image }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-dotnet@v5
+      - name: Pull and cache Docker images
+        id: pull-images
+        uses: ./.github/actions/pull-and-cache-docker-images
+
+  test:
+    needs: pull_docker_images
+    strategy:
+      matrix:
+        target:
+          - name: MsSql
+            cache-file: mssql.tar
+          - name: PostgreSQL
+            cache-file: postgres.tar
+    steps:
+      - uses: actions/checkout@v6
+      - name: Load cached Docker image
+        uses: ./.github/actions/load-cached-docker-image
+        with:
+          cache-file: ${{ matrix.target.cache-file }}
+          mssql-image: ${{ needs.pull_docker_images.outputs.mssql-image }}
+          postgres-image: ${{ needs.pull_docker_images.outputs.postgres-image }}
+      # ... rest of test steps
+```
+
+---
+
+## Benefits of Reusable Actions
+
+✅ **DRY Principle** - Define once, use everywhere  
+✅ **Consistency** - Same logic across all workflows  
+✅ **Maintainability** - Update in one place, applies to all workflows  
+✅ **Testability** - Actions can be tested independently  
+✅ **Versioning** - Can version actions separately if needed  
+✅ **Smart caching** - Only pulls when cache misses  
+
+---
+
+## Performance Characteristics
+
+### First Run (Cache Miss)
+```
+Extract versions:           ~5 seconds
+Pull SQL Server:            ~2-3 minutes
+Pull PostgreSQL:            ~30 seconds
+Save to cache:              ~30 seconds (parallel)
+────────────────────────────────────────
+Total:                      ~3-4 minutes
+```
+
+### Subsequent Runs (Cache Hit)
+```
+Extract versions:           ~5 seconds
+Restore cache:              ~10 seconds
+Load SQL Server from tar:   ~5 seconds
+Load PostgreSQL from tar:   ~2 seconds
+────────────────────────────────────────
+Total:                      ~22 seconds
+```
+
+**Time saved: ~3 minutes per run!** 🚀
+
+---
+
+## File Structure
+
+```
+.github/
+├── actions/
+│   ├── pull-and-cache-docker-images/
+│   │   └── action.yml
+│   └── load-cached-docker-image/
+│       └── action.yml
+├── scripts/
+│   └── GetTestContainerDockerImageTags.cs
+└── workflows/
+    ├── PullRequest.yml (uses both actions)
+    └── MergeToMain.yml (uses both actions)
+```
+
+---
+
+## Maintenance
+
+When updating Docker image handling logic:
+1. Update the action file in `.github/actions/*/action.yml`
+2. All workflows using the action automatically get the update
+3. No need to modify multiple workflow files
+
+---
+
+## Technical Details
+
+### Composite Actions
+These are **composite actions** (as opposed to JavaScript or Docker actions), which means:
+- They run shell commands and other actions
+- They execute in the same runner environment as the workflow
+- They have access to the repository files
+- They're lightweight and fast
+
+### Cache Strategy
+Both actions use the same cache key format to ensure:
+- The pull job creates the cache
+- The test jobs restore the same cache
+- Cache invalidates when image versions change
+- Cache is shared across jobs in the same workflow run
+- **Images are only pulled on cache miss**
+
+### Cache Hit Detection
+The `pull-and-cache-docker-images` action now properly detects cache hits:
+```yaml
+- name: Cache Docker images
+  id: cache-docker
+  uses: actions/cache@v4
+  # ...
+
+- name: Load cached Docker images
+  if: steps.cache-docker.outputs.cache-hit == 'true'  # ✅ Only if cached
+  # ...
+
+- name: Pull and cache Docker images
+  if: steps.cache-docker.outputs.cache-hit != 'true'  # ✅ Only if not cached
+  # ...
+```
+
+---
+
+## Workflows Using These Actions
+
+| Workflow | Pull Images | Load Images | Purpose |
+|----------|-------------|-------------|---------|
+| `PullRequest.yml` | ✅ | ✅ | PR validation with cached images |
+| `MergeToMain.yml` | ✅ | ✅ | Main branch testing with cached images |
+
+Both workflows benefit from the same optimized Docker image handling! 🚀

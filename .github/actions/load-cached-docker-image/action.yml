@@ -1,0 +1,47 @@
+name: 'Load Cached Docker Image'
+description: 'Loads a cached Docker image for Testcontainers tests'
+inputs:
+  cache-file:
+    description: 'The tar file name in the cache (e.g., mssql.tar, postgres.tar)'
+    required: true
+  mssql-image:
+    description: 'The SQL Server Docker image tag'
+    required: true
+  postgres-image:
+    description: 'The PostgreSQL Docker image tag'
+    required: true
+  ryuk-image:
+    description: 'The Testcontainers Ryuk Docker image tag'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Restore Docker image cache
+      uses: actions/cache@v4
+      with:
+        path: /tmp/.docker-cache
+        key: docker-images-${{ runner.os }}-${{ inputs.mssql-image }}-${{ inputs.postgres-image }}-${{ inputs.ryuk-image }}
+        restore-keys: |
+          docker-images-${{ runner.os }}-
+
+    - name: Load cached Docker images
+      shell: bash
+      run: |
+        # Load the specific test database image
+        if [ -f /tmp/.docker-cache/${{ inputs.cache-file }} ]; then
+          echo "✅ Loading cached Docker image from /tmp/.docker-cache/${{ inputs.cache-file }}"
+          docker load -i /tmp/.docker-cache/${{ inputs.cache-file }}
+          echo "✅ Image loaded successfully"
+        else
+          echo "⚠️  Cache not found for ${{ inputs.cache-file }}, image will be pulled by Testcontainers"
+        fi
+        
+        # Load the Ryuk image (needed by all tests)
+        if [ -f /tmp/.docker-cache/ryuk.tar ]; then
+          echo "✅ Loading cached Ryuk image from /tmp/.docker-cache/ryuk.tar"
+          docker load -i /tmp/.docker-cache/ryuk.tar
+          echo "✅ Ryuk image loaded successfully"
+        else
+          echo "⚠️  Ryuk cache not found, image will be pulled by Testcontainers"
+        fi

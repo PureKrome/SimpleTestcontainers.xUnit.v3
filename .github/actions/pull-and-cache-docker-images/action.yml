@@ -1,0 +1,110 @@
+name: 'Pull and Cache Docker Images'
+description: 'Pulls Docker images required by Testcontainers and caches them for faster test execution'
+outputs:
+  mssql-image:
+    description: 'The SQL Server Docker image tag'
+    value: ${{ steps.get-images.outputs.MSSQL_IMAGE }}
+  postgres-image:
+    description: 'The PostgreSQL Docker image tag'
+    value: ${{ steps.get-images.outputs.POSTGRES_IMAGE }}
+  ryuk-image:
+    description: 'The Testcontainers Ryuk Docker image tag'
+    value: ${{ steps.get-images.outputs.RYUK_IMAGE }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Get Docker image versions from Testcontainers
+      id: get-images
+      shell: bash
+      run: |
+        output=$(dotnet run .github/scripts/GetTestContainerDockerImageTags.cs)
+        echo "$output"
+        
+        # Parse output and set outputs
+        mssql_image=$(echo "$output" | grep "MSSQL_IMAGE=" | cut -d'=' -f2)
+        postgres_image=$(echo "$output" | grep "POSTGRES_IMAGE=" | cut -d'=' -f2)
+        ryuk_image=$(echo "$output" | grep "RYUK_IMAGE=" | cut -d'=' -f2)
+        
+        echo "MSSQL_IMAGE=$mssql_image" >> $GITHUB_OUTPUT
+        echo "POSTGRES_IMAGE=$postgres_image" >> $GITHUB_OUTPUT
+        echo "RYUK_IMAGE=$ryuk_image" >> $GITHUB_OUTPUT
+        
+        echo "Detected images:"
+        echo "  SQL Server: $mssql_image"
+        echo "  PostgreSQL: $postgres_image"
+        echo "  Ryuk: $ryuk_image"
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Cache Docker images
+      id: cache-docker
+      uses: actions/cache@v4
+      with:
+        path: /tmp/.docker-cache
+        key: docker-images-${{ runner.os }}-${{ steps.get-images.outputs.MSSQL_IMAGE }}-${{ steps.get-images.outputs.POSTGRES_IMAGE }}-${{ steps.get-images.outputs.RYUK_IMAGE }}
+        restore-keys: |
+          docker-images-${{ runner.os }}-
+
+    - name: Verify cached images exist
+      if: steps.cache-docker.outputs.cache-hit == 'true'
+      shell: bash
+      run: |
+        echo "✅ Cache hit! Verifying cached image files..."
+        
+        if [ -f /tmp/.docker-cache/mssql.tar ]; then
+          echo "✅ SQL Server image cached ($(du -h /tmp/.docker-cache/mssql.tar | cut -f1))"
+        else
+          echo "⚠️  SQL Server cache file missing"
+        fi
+        
+        if [ -f /tmp/.docker-cache/postgres.tar ]; then
+          echo "✅ PostgreSQL image cached ($(du -h /tmp/.docker-cache/postgres.tar | cut -f1))"
+        else
+          echo "⚠️  PostgreSQL cache file missing"
+        fi
+        
+        if [ -f /tmp/.docker-cache/ryuk.tar ]; then
+          echo "✅ Ryuk image cached ($(du -h /tmp/.docker-cache/ryuk.tar | cut -f1))"
+        else
+          echo "⚠️  Ryuk cache file missing"
+        fi
+        
+        echo "🎉 Cache verification complete - images will be loaded in test jobs"
+
+    - name: Pull and cache Docker images in parallel
+      if: steps.cache-docker.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        echo "❌ Cache miss! Pulling images from Docker Hub..."
+        mkdir -p /tmp/.docker-cache
+        
+        # Pull and save SQL Server image in background
+        (
+          echo "🔄 Pulling SQL Server image: ${{ steps.get-images.outputs.MSSQL_IMAGE }}"
+          docker pull ${{ steps.get-images.outputs.MSSQL_IMAGE }} && \
+          docker save ${{ steps.get-images.outputs.MSSQL_IMAGE }} -o /tmp/.docker-cache/mssql.tar && \
+          echo "✅ SQL Server image cached ($(du -h /tmp/.docker-cache/mssql.tar | cut -f1))"
+        ) &
+        
+        # Pull and save PostgreSQL image in background
+        (
+          echo "🔄 Pulling PostgreSQL image: ${{ steps.get-images.outputs.POSTGRES_IMAGE }}"
+          docker pull ${{ steps.get-images.outputs.POSTGRES_IMAGE }} && \
+          docker save ${{ steps.get-images.outputs.POSTGRES_IMAGE }} -o /tmp/.docker-cache/postgres.tar && \
+          echo "✅ PostgreSQL image cached ($(du -h /tmp/.docker-cache/postgres.tar | cut -f1))"
+        ) &
+        
+        # Pull and save Ryuk image in background
+        (
+          echo "🔄 Pulling Ryuk image: ${{ steps.get-images.outputs.RYUK_IMAGE }}"
+          docker pull ${{ steps.get-images.outputs.RYUK_IMAGE }} && \
+          docker save ${{ steps.get-images.outputs.RYUK_IMAGE }} -o /tmp/.docker-cache/ryuk.tar && \
+          echo "✅ Ryuk image cached ($(du -h /tmp/.docker-cache/ryuk.tar | cut -f1))"
+        ) &
+        
+        # Wait for all background jobs to complete
+        wait
+        echo "🎉 All images pulled and cached successfully"
+      continue-on-error: true
