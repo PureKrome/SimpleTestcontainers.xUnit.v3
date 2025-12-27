@@ -200,16 +200,16 @@
       "WorldDomination.SimpleTestcontainers.xUnit.v3.PostgreSQL": {
         "type": "Project",
         "dependencies": {
-          "Npgsql": "[10.0.0, )",
+          "Npgsql": "[10.0.1, )",
           "Testcontainers.PostgreSql": "[4.9.0, )",
           "WorldDomination.SimpleTestcontainers.xUnit.v3.Databases": "[1.0.0, )"
         }
       },
       "Npgsql": {
         "type": "CentralTransitive",
-        "requested": "[10.0.0, )",
-        "resolved": "10.0.0",
-        "contentHash": "xZAYhPOU2rUIFpV48xsqhCx9vXs6Y+0jX2LCoSEfDFYMw9jtAOUk3iQsCnDLrFIv9NT3JGMihn7nnuZsPKqJmA==",
+        "requested": "[10.0.1, )",
+        "resolved": "10.0.1",
+        "contentHash": "XyUcxEfqlFomhNTG/ZdGlec+uSOQArKz0Mzz8jYKP/Jj9GM2YabU5CVZtp0yiC4f9hRp+tRZTnHMatJeJ3rwgw==",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "10.0.0"
         }
