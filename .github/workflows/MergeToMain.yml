@@ -5,11 +5,11 @@ on:
     branches: [main]
     paths-ignore:
       - '.editorconfig'
-      - 'ReadMe.md'
+      - 'README.md'
       - 'ChangeLog.md'
-      - '.github/CODE_OF_CODUCT.md'
+      - '.github/CODE_OF_CONDUCT.md'
       - '.github/CONTRIBUTING.md'
-      - '.github/FUNDING.md'
+      - '.github/FUNDING.yml'
       - '.github/workflows/PullRequest.yml'
       - '.github/workflows/Release.yml'
 
