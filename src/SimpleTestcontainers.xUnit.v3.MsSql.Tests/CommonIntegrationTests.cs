@@ -1,4 +1,4 @@
-[assembly: AssemblyFixture(typeof(SqlServerFixture))]
+[assembly: AssemblyFixture(typeof(SqlServerFixtureWrapper))]
 [assembly: CaptureConsole]
 
 namespace SimpleTestcontainers.xUnit.v3.MsSql.Tests;

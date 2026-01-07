@@ -9,7 +9,7 @@ namespace WorldDomination.SimpleTestcontainers.xUnit.v3.PostgreSQL;
 ///   - Container Name: SqlServer-Tests
 ///   - Image: https://hub.docker.com/layers/library/postgres/15.1/images/sha256-f25135c3038e660f35edd6bc752769b67fa0c43dec1f691069f8089f6c2fd7a0
 /// </summary>
-public sealed class PostgreSqlFixture : ISimpleTestContainer, IDatabaseFixture, IAsyncLifetime
+public class PostgreSqlFixture : ISimpleTestContainer, IDatabaseFixture, IAsyncLifetime
 {
     private readonly PostgreSqlContainer _postgreSqlContainer;
 

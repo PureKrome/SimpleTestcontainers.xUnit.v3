@@ -7,9 +7,9 @@ namespace WorldDomination.SimpleTestcontainers.xUnit.v3.MsSql;
 /// <summary>
 /// Initializes a new instance of the <see cref="SqlServerFixture"/> class with some default settings.
 ///   - Container Name: SqlServer-Tests
-///   - Image: mcr.microsoft.com/mssql/server:2022 (Refer to TestContainers for the specific version)
+///   - Image: mcr.microsoft.com/mssql/server:2022-CU21-ubuntu-22.04
 /// </summary>
-public sealed class SqlServerFixture : ISimpleTestContainer, IDatabaseFixture, IAsyncLifetime
+public class SqlServerFixture : ISimpleTestContainer, IDatabaseFixture, IAsyncLifetime
 {
     private readonly MsSqlContainer _msSqlContainer;
 

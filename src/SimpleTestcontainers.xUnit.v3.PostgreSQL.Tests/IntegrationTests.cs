@@ -3,13 +3,22 @@ using Npgsql;
 using WorldDomination.SimpleTestcontainers.xUnit.v3.PostgreSQL;
 using Xunit;
 
-[assembly: AssemblyFixture(typeof(PostgreSqlFixture))]
+[assembly: AssemblyFixture(typeof(PostgreSqlFixtureWrapper))]
 [assembly: CaptureConsole]
 
 namespace SimpleTestcontainers.xUnit.v3.PostgreSQL.Tests;
 
-public class IntegrationTests(PostgreSqlFixture PostgreSqlFixture, ITestOutputHelper TestOutputHelper)
+public class IntegrationTests
 {
+    private readonly PostgreSqlFixture _postgreSqlFixture;
+    private readonly ITestOutputHelper _testOutputHelper;
+
+    public IntegrationTests(PostgreSqlFixtureWrapper PostgreSqlFixtureWrapper, ITestOutputHelper TestOutputHelper)
+    {
+        _postgreSqlFixture = PostgreSqlFixtureWrapper;
+        _testOutputHelper = TestOutputHelper;
+    }
+
     [Fact]
     public async Task QuerySingleAsync_GivenASimpleScript_ShouldReturn1()
     {
@@ -17,13 +26,13 @@ public class IntegrationTests(PostgreSqlFixture PostgreSqlFixture, ITestOutputHe
 
         // Lets create a unique database 'connection string' for this test.
         // NOTE: the actual database has NOT been created yet.
-        var connectionStringInfo = PostgreSqlFixture.CreateUniqueConnectionStringInfo(TestContext.Current, TestOutputHelper);
+        var connectionStringInfo = _postgreSqlFixture.CreateUniqueConnectionStringInfo(TestContext.Current, _testOutputHelper);
 
         // Now that we know the name of the unique database we will use,
         // lets create this unique database.
         var createSql = $"CREATE DATABASE {connectionStringInfo.DatabaseName};";
 
-        var generalConnectionString = PostgreSqlFixture.ConnectionString;
+        var generalConnectionString = _postgreSqlFixture.ConnectionString;
 
         using (var connection = new NpgsqlConnection(generalConnectionString))
         {

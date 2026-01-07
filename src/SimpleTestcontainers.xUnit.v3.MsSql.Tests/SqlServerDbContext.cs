@@ -1,5 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-
 namespace SimpleTestcontainers.xUnit.v3.MsSql.Tests;
 
 public class SqlServerDbContext(DbContextOptions<SqlServerDbContext> options) : DbContext(options)
