@@ -65,6 +65,31 @@ public class SomeTests(
     }
 ```
 
+### Using a custom Docker image tag.
+```csharp
+public class SomeTests(
+    SqlServerFixture SqlServerFixture, // The MSSql Testcontainer with a custom image tag.
+    ITestOutputHelper TestOutputHelper
+) : IClassFixture<SqlServerFixture>
+{
+    // Override the default image tag by passing a custom one to the fixture constructor.
+    // If no imageTag is provided, the default image tag will be used:
+    // - SQL Server: mcr.microsoft.com/mssql/server:2022-CU21-ubuntu-22.04
+    // - PostgreSQL: postgres:18.1
+    
+    public SomeTests()
+    {
+        SqlServerFixture = new SqlServerFixture("mcr.microsoft.com/mssql/server:2019-latest");
+    }
+
+    [Fact]
+    public async Task Example_Test()
+    {
+        // Use the fixture with your custom image tag...
+    }
+}
+```
+
 ### Using Entity Framework Core.
 ```csharp
 public class SomeTests(
