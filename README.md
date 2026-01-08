@@ -36,6 +36,63 @@ Finally, it's frustrating that multiple tests hitting the **same Database** can 
 - ✅ Tests are now isolated from each other.
 - ⚡ The entire test run can be faster because they now run in parallel (based off xUnit's [Test Collections concept](https://xunit.net/docs/running-tests-in-parallel#parallelism-in-test-frameworks))
 
+---
+
+## Key Differences vs. Standard TestContainers
+
+| Feature | Standard TestContainers | This Library |
+|---------|------------------------|--------------|
+| **Parallel Test Execution** | ❌ Requires Test Collections (sequential) | ✅ Test classes run in parallel by default |
+| **Database Isolation** | ❌ Shared database = data conflicts | ✅ Unique database per test class |
+| **Setup Complexity** | ❌ Manual Test Collection attributes | ✅ Zero ceremony - just inject the fixture |
+| **Performance** | ❌ Usually slower because of sequential execution via Test Collection | ✅ Faster (parallel across CPU cores) but does depend on how much data you _seed_ on each isolated db that is created |
+| **Container Usage** | ✅ One container, one DB | ✅ One container, multiple databases |
+| **Test Independence** | ❌ Test _data_ can interfere with each other (need to rollback changes, etc) | ✅ Complete isolation between test classes |
+
+### How It Works
+
+**Standard Approach:**
+```csharp
+// ❌ Forces sequential execution
+[Collection("Database Collection")]
+public class UserTests : IClassFixture<DatabaseContainer>
+{
+    [Fact]
+    public async Task Test1() { /* Shared DB */ }
+}
+```
+
+**This Library:**
+```csharp
+// ✅ Runs in parallel automatically
+public class UserTests1(SqlServerFixture fixture, ITestOutputHelper output)
+{
+    [Fact]
+    public async Task Test()
+    {
+        // Gets unique DB: "usertest1_abc123"
+        var connectionString = fixture.CreateDbConnectionString(TestContext.Current, output);
+        // ...
+    }
+}
+
+public class UserTests2(SqlServerFixture fixture, ITestOutputHelper output)
+{
+    [Fact]
+    public async Task Test()
+    {
+        // Gets unique DB: "usertest2_def456" 
+        var connectionString = fixture.CreateDbConnectionString(TestContext.Current, output);
+        // ...
+    }
+}
+// Both classes run IN PARALLEL! 🚀
+```
+
+**The Magic:** The `CreateDbConnectionString()` method generates a unique database name per test class (using test name + GUID), allowing the same container to host multiple isolated databases and enabling parallel test execution without data conflicts.
+
+---
+
 ## 💻 TL;DR; Show me some code!
 
 ### A bare minimum example.
