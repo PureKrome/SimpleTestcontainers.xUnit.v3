@@ -38,7 +38,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v5
 
-      - run: dotnet restore --verbosity minimal
+      - run: dotnet restore --verbosity minimal --locked-mode
 
       - run: dotnet build --configuration Release -p:ContinuousIntegrationBuild=true -p:DebugType=Embedded -p:version=${{ env.RELEASE_VERSION }}
 
