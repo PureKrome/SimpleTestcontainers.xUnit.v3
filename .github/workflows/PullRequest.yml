@@ -40,7 +40,7 @@ jobs:
       - run: dotnet build --configuration Debug --no-restore /p:ContinuousIntegrationBuild=true
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: build-debug
           path: |
@@ -120,7 +120,7 @@ jobs:
       - run: dotnet pack --configuration Release --no-build --output ./artifacts -p:DebugType=Embedded -p:VersionPrefix=$VERSION_PREFIX --version-suffix $VERSION_SUFFIX
 
       - name: Publish artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: NuGetPackage.${{ env.VERSION_PREFIX }}-${{ env.VERSION_SUFFIX }}
           path: ./artifacts/
