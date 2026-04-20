@@ -45,13 +45,13 @@ jobs:
       - run: dotnet pack --configuration Release --no-build --output ./artifacts -p:DebugType=Embedded -p:version=${{ env.RELEASE_VERSION }}
 
       - name: Publish artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: NuGetPackage.${{ env.RELEASE_VERSION }}
           path: ./artifacts/
 
       - name: Upload release assets
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
