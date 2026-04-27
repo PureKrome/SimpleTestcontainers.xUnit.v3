@@ -396,16 +396,16 @@
       "WorldDomination.SimpleTestcontainers.xUnit.v3.MsSql": {
         "type": "Project",
         "dependencies": {
-          "Microsoft.Data.SqlClient": "[7.0.0, )",
+          "Microsoft.Data.SqlClient": "[7.0.1, )",
           "Testcontainers.MsSql": "[4.11.0, )",
           "WorldDomination.SimpleTestcontainers.xUnit.v3.Databases": "[1.0.0, )"
         }
       },
       "Microsoft.Data.SqlClient": {
         "type": "CentralTransitive",
-        "requested": "[7.0.0, )",
-        "resolved": "7.0.0",
-        "contentHash": "/oolEwtHuDtpLKU8OItOTTxVJalgPtIkcNBwzXJ3YGyrkOAvLYqMtin9Z1jxqryJpds3PjuZBF5iKIYVVYVSvQ==",
+        "requested": "[7.0.1, )",
+        "resolved": "7.0.1",
+        "contentHash": "9jZFXAJ2ThNYK7lhj2RhH7klXVNaWSvZpQncq3bPIOjmHBrdjwgeO4c8wucUVxQwFT8rAA13Z2F2jzoYR7ICDw==",
         "dependencies": {
           "Microsoft.Bcl.Cryptography": "9.0.13",
           "Microsoft.Data.SqlClient.Extensions.Abstractions": "1.0.0",
